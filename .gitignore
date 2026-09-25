@@ -1,6 +1,8 @@
 # Recorded audio data
 data/laptop_audio/
 data/nao_audio/
+# Captured camera frames
+data/nao_frames/
 
 # Python
 __pycache__/
@@ -12,3 +14,4 @@ venv/
 
 # Environment variables
 .env
+

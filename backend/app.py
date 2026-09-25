@@ -1,10 +1,16 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
+from PIL import Image
+from io import BytesIO
+import os
+from datetime import datetime
+
 
 app = FastAPI(
     title="NAO Emotion Training Backend",
     version="1.0"
 )
+
 
 scenarios_db = [
     {
@@ -67,4 +73,75 @@ def submit_response(data: ChildResponse):
         "message": "Response received and logged successfully",
         "scenario_id": data.scenario_id,
         "received_text": data.spoken_text
+    }
+
+
+@app.post("/api/camera/frame")
+async def upload_camera_frame(frame: UploadFile = File(...)):
+    folder = "data/nao_frames"
+    os.makedirs(folder, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    extension = os.path.splitext(frame.filename)[1].lower()
+
+    if not extension:
+        extension = ".jpg"
+
+    filename = f"frame_{timestamp}{extension}"
+    file_path = os.path.join(folder, filename)
+
+    contents = await frame.read()
+
+    with open(file_path, "wb") as f:
+        f.write(contents)
+
+    return {
+        "status": "success",
+        "message": "Camera frame saved successfully",
+        "file_path": file_path
+    }
+
+
+@app.post("/api/camera/raw-frame")
+async def upload_raw_camera_frame(
+    width: int = Form(...),
+    height: int = Form(...),
+    frame: UploadFile = File(...)
+):
+    folder = "data/nao_frames"
+    os.makedirs(folder, exist_ok=True)
+
+    raw_data = await frame.read()
+
+    expected_size = width * height * 3
+
+    if len(raw_data) != expected_size:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid RGB frame size. Expected {expected_size} bytes, received {len(raw_data)}."
+        )
+
+    image = Image.frombytes(
+        "RGB",
+        (width, height),
+        raw_data
+    )
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    filename = f"nao_frame_{timestamp}.jpg"
+    file_path = os.path.join(folder, filename)
+
+    image.save(
+        file_path,
+        format="JPEG",
+        quality=90
+    )
+
+    return {
+        "status": "success",
+        "message": "NAO camera frame received and saved successfully",
+        "width": width,
+        "height": height,
+        "file_path": file_path
     }
