@@ -16,30 +16,50 @@ My part is to capture audio and camera data from NAO and prepare the data to be 
 - [x] Added an 8-second response time
 - [x] Added start and stop recording logic
 - [x] Tested the audio capture flow using Virtual NAO
-- [x] Handled the Virtual NAO microphone limitation without crashing the behavior
+- [x] Handled the Virtual NAO microphone limitation without crashing
+- [x] Tested audio recording using the laptop microphone
+- [x] Saved each laptop recording with a different name
+- [x] Created separate folders for laptop and NAO audio
+- [x] Added .gitignore to keep audio recordings out of GitHub
 
 ## Still To Do
 
 - [ ] Test the microphone on the real NAO
-- [ ] Record a real audio file
-- [ ] Save/transfer the audio to the PC
+- [ ] Record a real audio file using NAO
+- [ ] Transfer NAO audio to data/nao_audio on the PC
 - [ ] Create the camera capture
-- [ ] Test the camera on NAO
+- [ ] Test the camera
 - [ ] Capture face images/frames
-- [ ] Save/transfer the images to the PC
+- [ ] Save camera data on the PC
 - [ ] Make audio and camera capture work at the same time
 - [ ] Connect the captured data with the backend
 - [ ] Test the full data capture process
 
 ## Current Status
 
-The audio capture flow is ready for testing on the real NAO.
+The audio capture flow is ready.
 
-The Virtual NAO does not provide the ALAudioRecorder service, so I used it to test the flow and timing only. Real audio recording still needs to be tested using the physical NAO.
+The Virtual NAO was used to test the NAO audio flow and timing.
+
+Since Virtual NAO does not provide the ALAudioRecorder service, I also tested real audio recording using the laptop microphone. The recording is saved successfully on the PC.
+
+The physical NAO microphone still needs to be tested when the robot is available.
+
+## Audio Files
+
+Laptop microphone recordings are saved in:
+
+data/laptop_audio/
+
+NAO recordings will be transferred and saved in:
+
+data/nao_audio/
+
+These audio folders are ignored by Git and are not uploaded to GitHub.
 
 ## Next
 
-Start working on the camera capture using Choregraphe.
+Start working on the camera capture.
 
 ## My Part
 
