@@ -1,108 +1,182 @@
-# Reem - NAO Data Capture Progress
+# Reem — NAO Data Acquisition & Backend Progress
 
-## What I am working on
+## 1. My Responsibilities
 
-My part is to capture audio and camera data from NAO and prepare the data to be sent to the PC for emotion analysis.
+My primary responsibility is developing and testing the data acquisition and communication pipeline between the NAO V6 humanoid robot and the PC-based emotion recognition system.
 
-## Done
+My work focuses on:
 
-### Audio Capture
+- NAO microphone and camera integration.
+- Audio recording and image acquisition.
+- Data transfer and file organization.
+- FastAPI backend development.
+- Testing and troubleshooting robot-to-PC communication.
+- Preparing acquired data for downstream AI processing.
 
-- [x] Created the NAO Data Capture project in Choregraphe
-- [x] Created the Capture_Audio box
-- [x] Added the NAO audio recorder code
-- [x] Added an 8-second response time
-- [x] Added start and stop recording logic
-- [x] Tested the audio capture flow using Virtual NAO
-- [x] Handled the Virtual NAO microphone limitation without crashing
-- [x] Tested audio recording using the laptop microphone
-- [x] Saved laptop recordings with unique filenames
-- [x] Created separate folders for laptop and NAO audio
+## 2. Completed Work
 
-### Camera Capture
+### Audio Acquisition
 
-- [x] Created the Capture_Camera box in Choregraphe
-- [x] Accessed ALVideoDevice successfully on Virtual NAO
-- [x] Captured a 320x240 RGB camera frame
-- [x] Created a FastAPI endpoint for camera frame transfer
-- [x] Sent a raw RGB frame from Choregraphe to the PC
-- [x] Converted the raw RGB frame to JPEG on the PC
-- [x] Saved NAO camera frames in data/nao_frames/
-- [x] Tested the complete Virtual NAO camera transfer flow
-- [x] Created a laptop camera test using OpenCV
-- [x] Captured a real frame using the laptop camera
-- [x] Sent the laptop camera frame to FastAPI successfully
-- [x] Saved the laptop camera test frame successfully
+- [x] Created the NAO Data Capture project in Choregraphe.
+- [x] Developed the `Capture_Audio` component.
+- [x] Implemented recording using `ALAudioRecorder`.
+- [x] Configured an approximately 8-second response recording window.
+- [x] Implemented recording start and stop logic.
+- [x] Tested the recording workflow with Virtual NAO.
+- [x] Handled Virtual NAO microphone limitations.
+- [x] Tested local microphone recording.
+- [x] Successfully recorded audio using the physical NAO V6 microphone.
+- [x] Transferred recorded WAV files from NAO to the PC.
+- [x] Organized recordings using sequential filenames.
 
-### Data and Privacy
+### Camera Acquisition
 
-- [x] Added audio folders to .gitignore
-- [x] Added camera frames folder to .gitignore
-- [x] Prevented recorded audio and captured images from being uploaded to GitHub
+- [x] Developed the `Capture_Camera` component in Choregraphe.
+- [x] Accessed `ALVideoDevice` using Virtual NAO.
+- [x] Captured 320 × 240 RGB frames.
+- [x] Implemented raw RGB frame transfer to FastAPI.
+- [x] Converted received RGB data into JPEG images.
+- [x] Saved captured images in `data/nao_frames/`.
+- [x] Tested the complete Virtual NAO camera-to-backend workflow.
+- [x] Tested camera acquisition using the laptop camera and OpenCV.
+- [x] Successfully captured images using the physical NAO V6 camera.
+- [x] Tested physical robot image acquisition using `ALPhotoCapture`.
 
-## Current Camera Flow
+### Robot Communication & File Transfer
 
-Virtual NAO camera flow:
+- [x] Established SSH communication with the physical NAO robot.
+- [x] Configured SCP file transfers between NAO and the PC.
+- [x] Set up passwordless SSH authentication.
+- [x] Successfully retrieved recorded audio and captured images.
+- [x] Developed file-monitoring and sequential naming scripts to support automated data transfer.
 
-NAO Camera -> Capture_Camera -> Raw RGB Frame -> HTTP -> FastAPI -> JPEG -> data/nao_frames/
+### Backend Development
 
-Laptop camera test flow:
+Developed a Python backend using FastAPI.
 
-Laptop Camera -> OpenCV -> FastAPI -> data/nao_frames/
+Implemented endpoints:
 
-Both PC-side camera transfer and image saving have been tested successfully.
+- [x] `GET /` — Backend health check.
+- [x] `POST /api/session/start` — Initialize a session.
+- [x] `GET /api/scenario/next` — Retrieve a predefined interaction scenario.
+- [x] `POST /api/response/submit` — Receive a spoken-response transcript.
+- [x] `POST /api/camera/frame` — Receive and save an image.
+- [x] `POST /api/camera/raw-frame` — Receive raw RGB data, convert it to JPEG, and save it.
 
-## Still To Do
+The current backend provides the basic API structure for managing scenarios and receiving data. Full session persistence and automatic AI evaluation are not yet integrated.
 
-- [ ] Test the microphone on the physical NAO V6
-- [ ] Record a real audio file using the physical NAO
-- [ ] Transfer NAO audio to data/nao_audio/ on the PC
-- [ ] Test the camera on the physical NAO V6
-- [ ] Capture a real face frame using the physical NAO camera
-- [ ] Send the physical NAO camera frame to FastAPI
-- [ ] Verify the physical NAO frame is saved correctly on the PC
-- [ ] Synchronize audio and camera capture during the same interaction
-- [ ] Connect captured data with the other emotion recognition modules
-- [ ] Test the complete end-to-end data capture process
+### Data Management & Privacy
 
-## Current Status
+- [x] Organized separate folders for recorded audio and captured images.
+- [x] Added recorded audio directories to `.gitignore`.
+- [x] Added captured-image directories to `.gitignore`.
+- [x] Excluded locally recorded audio and image files from Git tracking.
 
-The audio capture flow is ready for physical NAO testing.
+## 3. Verified Data Acquisition Workflows
 
-The camera capture and frame transfer pipeline has been successfully tested using Virtual NAO. A raw RGB frame can be captured in Choregraphe, sent through HTTP to the FastAPI backend, converted to JPEG, and saved on the PC.
+### Physical NAO Audio Workflow
 
-The PC-side camera pipeline was also tested using the laptop camera with OpenCV, and real camera frames were successfully captured, transferred, and saved.
+NAO Microphone → Audio Recording → WAV File → SSH/SCP → PC Storage
 
-The physical NAO V6 microphone and camera still need to be tested.
+**Status:** Successfully tested with the physical NAO V6.
 
-## Data Folders
+### Physical NAO Image Acquisition
 
-Laptop microphone test recordings:
+NAO Camera → ALPhotoCapture → Image File → PC Transfer
 
-data/laptop_audio/
+**Status:** Physical robot image capture and file retrieval tested successfully.
 
-Physical NAO audio:
+### Virtual NAO Camera-to-Backend Workflow
 
-data/nao_audio/
+Virtual NAO Camera → ALVideoDevice → Raw RGB Frame → HTTP → FastAPI → JPEG Conversion → Local Storage
 
-Camera frames:
+**Status:** Successfully tested.
 
-data/nao_frames/
+### Laptop Camera-to-Backend Workflow
 
-These folders are ignored by Git and their recorded data is not uploaded to GitHub.
+Laptop Camera → OpenCV → FastAPI → Local Storage
 
-## Next
+**Status:** Successfully tested.
 
-Test the audio and camera capture using the physical NAO V6.
+These workflows have been tested separately. A fully synchronized audio-and-camera session is still under development.
 
-## My Part
+## 4. Preliminary AI Processing Tests
 
-My responsibility is:
+The captured data is intended to be processed by separate team modules.
 
-NAO microphone + NAO camera -> capture audio and face data -> send/save the data on the PC.
+Standalone experiments have included:
 
-The Speech & Text Emotion module will process the spoken response.
+- Speech transcription using Whisper.
+- Facial expression analysis using DeepFace.
+- Preliminary language model evaluation for text-based emotion classification.
 
-The Computer Vision module will process the captured face frames and classify the facial expression.
+These experiments do not mean that all AI components have been integrated into the final NAO interaction workflow.
 
-The other team modules will combine and display the final emotion results.
+The Speech-to-Text and Computer Vision modules are primarily handled by other team members.
+
+## 5. Remaining Tasks
+
+### System Integration
+
+- [ ] Synchronize audio recording and camera capture during the same interaction.
+- [ ] Connect the physical NAO data acquisition workflow to the complete backend session pipeline.
+- [ ] Integrate the Speech-to-Text component.
+- [ ] Integrate the selected MLLM emotion classification component.
+- [ ] Integrate the selected facial expression recognition component.
+- [ ] Implement persistent session-level data logging.
+- [ ] Connect classification results to the backend response evaluation process.
+
+### Evaluation and Reporting
+
+- [ ] Implement complete response correctness evaluation.
+- [ ] Integrate descriptive verbal–facial emotion comparison.
+- [ ] Generate structured session reports.
+- [ ] Perform end-to-end testing with predefined labeled scenarios.
+- [ ] Measure workflow completion and processing latency.
+- [ ] Resolve integration issues identified during testing.
+
+## 6. Current Project Status
+
+**Status: Core data acquisition and backend components implemented; full system integration in progress.**
+
+The physical NAO V6 has been successfully used for image capture and audio recording.
+
+Robot-to-PC data transfer has also been demonstrated, and basic FastAPI endpoints have been developed to receive and process acquired data.
+
+The next major milestone is connecting the existing components into a single coordinated interaction workflow.
+
+The complete emotion recognition and reporting system has not yet been validated end-to-end.
+
+## 7. Data Directories
+
+```text
+data/
+├── laptop_audio/
+├── nao_audio/
+└── nao_frames/
+```
+
+These directories store locally captured data and are excluded from version control.
+
+## 8. Project Scope
+
+The project is designed to support structured emotion-recognition activities involving four target emotions:
+
+- Happiness
+- Sadness
+- Anger
+- Neutrality
+
+The system uses predefined emotional images, open-ended verbal responses, and independent facial-expression analysis.
+
+The current evaluation scope is limited to prototype testing using predefined labeled scenarios. Testing with children with Autism Spectrum Disorder (ASD) is not part of the current implementation phase.
+
+---
+
+**Contributor:** Reem Abdulhameed
+
+**Project:** NAO-Based Emotion Recognition System
+
+**University:** University of Jeddah
+
+**Academic Year:** 2026–2027
